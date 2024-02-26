@@ -21,6 +21,8 @@ services:
     env_file: .env
     depends_on:
       - postgres
+    volumes:
+      - ./server:/home/node/app
     networks:
       - app
 
@@ -29,6 +31,8 @@ services:
       context: ./client
     ports:
       - "3000:3000"
+    volumes:
+      - ./client:/app
     networks:
       - app
 
