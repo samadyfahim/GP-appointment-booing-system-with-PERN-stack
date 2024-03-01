@@ -5,7 +5,11 @@ import LogIn from './Pages/LogIn';
 
 function App() {
   return (
-    <LogIn/>
+    <div className="App">
+      <header className="App-header">
+        
+      </header>
+    </div>
   );
 }
 
