@@ -8,7 +8,7 @@ const corsOptions = {
         }
     },
     credentials: true,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 300
 }
 
 module.exports = corsOptions

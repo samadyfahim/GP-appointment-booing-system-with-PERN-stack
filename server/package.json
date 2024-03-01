@@ -2,7 +2,7 @@
   "name": "project-mern",
   "version": "1.0.0",
   "description": "",
-  "main": "sever.js",
+  "main": "index.js",
   "scripts": {
     "start": "node sever",
     "dev": "nodemon server"

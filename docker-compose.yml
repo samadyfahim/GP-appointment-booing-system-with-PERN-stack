@@ -17,7 +17,7 @@ services:
     build:
       context: ./server
     ports:
-      - "3500:3500"
+      - "4000:4000"
     env_file: .env
     depends_on:
       - postgres
@@ -30,7 +30,7 @@ services:
     build:
       context: ./client
     ports:
-      - "3000:3000"
+      - "2000:2000"
     volumes:
       - ./client:/app
     networks:

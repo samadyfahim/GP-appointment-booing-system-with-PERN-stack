@@ -12,6 +12,6 @@ USER node
 
 RUN npm install
 
-EXPOSE 3500
+EXPOSE 4000
 
 CMD [ "node", "index.js" ]
