@@ -10,6 +10,6 @@ USER node
 
 RUN npm install
 
-EXPOSE 2000
+EXPOSE 3000
 
 CMD [ "npm", "start" ]
