@@ -1,11 +1,18 @@
 
 import './App.css';
 
-import LogIn from './Pages/LogIn';
+import LogIn from './pages/LogIn';
+import Sidebar from './pagesComponents/sideBar';
+import TopBar from './pagesComponents/topBar';
+import AppointmentForm from './pagesComponents/appointmentReqForm';
+
 
 function App() {
   return (
-   <LogIn />
+    // <LogIn />
+  // <Sidebar />
+  // <TopBar />
+    <AppointmentForm/>
   );
 }
 
