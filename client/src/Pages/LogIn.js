@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LogIn = () => {
+    const navigate = useNavigate(); // Use useNavigate hook to access navigation function
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -13,9 +15,8 @@ const LogIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Send formData to the server for authentication
         try {
-            const response = await fetch('your-authentication-endpoint', {
+            const response = await fetch('http://localhost:5000/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -23,10 +24,10 @@ const LogIn = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                // User authenticated successfully, redirect or set user state
-                console.log('User authenticated successfully');
+                const data = await response.json();
+                localStorage.setItem('token', data.token); // Store the token in localStorage
+                navigate(data.redirectUrl); // Redirect to the specified URL using navigate
             } else {
-                // Authentication failed
                 console.error('Authentication failed');
             }
         } catch (error) {
