@@ -17,12 +17,12 @@ services:
     build:
       context: ./server
     ports:
-      - "4000:4000"
+      - "5000:5000"
     env_file: .env
     depends_on:
       - postgres
     volumes:
-      - C:/project MERN/server:/app
+      - C:/project MERN/server:/home/node/app
     networks:
       - app
 
@@ -31,6 +31,7 @@ services:
       context: ./client
     ports:
       - "3000:3000"
+    env_file: .env.react
     volumes:
       - C:/project MERN/client:/app
     networks:

@@ -23,6 +23,7 @@ const AppointmentReqForm = () => {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     // Implement form submission logic here
     console.log(formData); // Example: Log form data to console
     // Reset form fields

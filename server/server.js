@@ -1,25 +1,42 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const path = require('path')
 const { logger } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
-const PORT = process.env.PORT || 4000
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 const pool = require('./config/dbConn')
+console.log(process.env.NODE_ENV)
+const patientController = require('./controllers/patientController');
+const userController = require('./controllers/UserController');
 
-app.use((req, res, next) => {
-    req.db = pool;
-    next()
-});
+
+
+const PORT = process.env.PORT || 5000 
+
+
 
 app.use(logger)
 
+app.use(cors(corsOptions))
 
 app.use(express.json())
+
 app.use(cookieParser())
-app.use(cors(corsOptions))
+
+
+// app.use((req, res, next) => {
+//     req.db = pool;
+//     next()
+// });
+
+
+
 
 
 /*
@@ -37,6 +54,15 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 app.use('/', require('./routes/root'))
 
+
+
+app.use(bodyParser.json());
+
+// Routes
+app.post('/users', userController.createUser);
+
+
+app.post('/patients', patientController.createPatient);
 
 /*
 
@@ -57,6 +83,56 @@ app.get('/users', async (req, res) => {
   });
 
 */
+
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hashedPassword]);
+        res.status(201).send('User registered successfully');
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// User login
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        if (result.rows.length === 0) {
+            return res.status(401).send('Invalid username or password');
+        }
+        const user = result.rows[0];
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) {
+            return res.status(401).send('Invalid username or password');
+        }
+        const token = jwt.sign({ id: user.id, username: user.username }, 'your_secret_key');
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error('Error logging in:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+// Protected route example
+app.get('/protected', authenticateToken, (req, res) => {
+    res.send('Protected route accessed successfully');
+});
+
+// Middleware to authenticate JWT token
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.status(401).send('Unauthorized');
+    jwt.verify(token, 'your_secret_key', (err, user) => {
+        if (err) return res.status(403).send('Forbidden');
+        req.user = user;
+        next();
+    });
+}
 
 
 

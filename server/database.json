@@ -1,0 +1,18 @@
+{
+  "dev": {
+    "driver": "pg",
+    "host": "localhost",
+    "user": "postgres",
+    "password": "fahim123",
+    "database": "booking",
+    "multipleStatements": true
+  },
+  "test": {
+    "driver": "pg",
+    "host": "localhost",
+    "user": "postgres",
+    "password": "fahim123",
+    "database": "testData",
+    "multipleStatements": true
+  }
+}

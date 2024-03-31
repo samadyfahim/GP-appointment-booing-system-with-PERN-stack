@@ -10,6 +10,6 @@ USER node
 
 RUN npm install
 
-EXPOSE 4000
+EXPOSE 5000
 
 CMD [ "node", "server.js" ]
