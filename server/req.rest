@@ -1,4 +1,4 @@
-post http://localhost:5000/api/users
+post http://localhost:5000/
 Content-Type: application/json
 
 {
@@ -8,3 +8,11 @@ Content-Type: application/json
 
 }
 
+###
+GET http://localhost:5000/users
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZXJOYW1lIjoiZmFoaW0iLCJlbWFpbCI6ImZhaGltQG15Y2FyZS5jb20iLCJpYXQiOjE3MTE5MjAzNzEsImV4cCI6MTcxMTkyMDQyMX0.dwpTBKHf20yT--DezdlLn0PzZ6LdAfVWaYvaolU-hIw
+
+
+###
+GET http://localhost:5000/users

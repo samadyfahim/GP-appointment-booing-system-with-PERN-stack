@@ -29,13 +29,7 @@ app.use(express.json())
 
 app.use(cookieParser())
 
-
-// app.use((req, res, next) => {
-//     req.db = pool;
-//     next()
-// });
-
-
+app.use(bodyParser.json());
 
 
 
@@ -54,56 +48,12 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 app.use('/', require('./routes/root'))
 
-
-
-app.use(bodyParser.json());
-
 // Routes
-app.post('/users', userController.createUser);
-
+app.get('/users', userController.getUsers);
+app.post('/newUser', userController.createUser);
 app.post('/login', userController.loginUser);
-
 app.post('/patients', patientController.createPatient);
 
-/*
-
-DATABASE RETRIEVE DATA
-
-app.get('/users', async (req, res) => {
-    try {
-      const client = await pool.connect();
-      const result = await client.query('SELECT * FROM users');
-      const users = result.rows;
-      client.release();
-  
-      res.json(users);
-    } catch (err) {
-      console.error('Error executing query', err);
-      res.status(500).json({ error: err.message }); // Send the error message in the response
-    }
-  });
-
-*/
-
-
-
-
-// Protected route example
-app.get('/protected', authenticateToken, (req, res) => {
-    res.send('Protected route accessed successfully');
-});
-
-// Middleware to authenticate JWT token
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.status(401).send('Unauthorized');
-    jwt.verify(token, 'your_secret_key', (err, user) => {
-        if (err) return res.status(403).send('Forbidden');
-        req.user = user;
-        next();
-    });
-}
 
 
 
