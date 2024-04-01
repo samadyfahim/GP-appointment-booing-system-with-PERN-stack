@@ -4,7 +4,7 @@ import LogIn from './pages/LogIn';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import Sidebar from './pagesComponents/sideBar';
 // import TopBar from './pagesComponents/topBar';
-import AppointmentForm from './appointmentReqForm';
+import AppointmentForm from './pages/appointmentReqForm';
 
 
 // function App() {
@@ -17,7 +17,7 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LogIn />} />
+        <Route path="/" element={<LogIn />} />
         <Route path="/home" element={<AppointmentForm />} />
         {/* Add more routes as needed */}
       </Routes>

@@ -1,5 +1,8 @@
 require('dotenv').config();
 const express = require('express')
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const app = express()
 const path = require('path')
 const { logger } = require('./middleware/logger')
@@ -7,15 +10,22 @@ const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions')
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const pool = require('./config/dbConn')
 console.log(process.env.NODE_ENV)
 const patientController = require('./controllers/patientController');
 const userController = require('./controllers/UserController');
 
 
+const httpServer = http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+});
+httpServer.listen(80);
+
+const privateKey = fs.readFileSync('private.key', 'utf8');
+const certificate = fs.readFileSync('certificate.crt', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+const httpsServer = https.createServer(credentials, app);
 
 const PORT = process.env.PORT || 5000 
 
@@ -84,6 +94,8 @@ app.all('*', (req , res) => {
     message when the server is successfully started.
 */
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
-
+// httpsServer.listen(PORT, () => {
+//     console.log(`Server running on port ${PORT}`);
+// });
 app.use(errorHandler)
 

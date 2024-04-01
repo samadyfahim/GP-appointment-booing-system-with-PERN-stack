@@ -43,11 +43,8 @@ exports.loginUser = async (req, res) => {
         let tokens = jwtTokens({userId: user.id, userName: user.userName, email: user.email});
         res.cookie('refresh_token', tokens.refreshToken,{httpOnly:true})
 
-        // Generate JWT token
-        // const token = jwt.sign({ userId: user.id }, 'your_secret_key', { expiresIn: '1h' });
-
         // Respond with token and redirect URL
-        res.status(200).json({ tokens, redirectUrl: '/user/home' });
+        res.status(200).json({ tokens, redirectUrl: '/home' });
     } catch (error) {
         console.error('Error logging in user:', error);
         res.status(401).json({ error: error.message });

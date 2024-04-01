@@ -1,41 +1,32 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../middelware/AuthContext';
 
 const LogIn = () => {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: ''
-    });
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:5000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                const data = await response.json();
-                document.cookie = `token=${data.token}; path=/`;
-                navigate(data.redirectUrl);
-            } else {
-                console.error('Authentication failed');
-            }
-        } catch (error) {
-            console.error('Error occurred during authentication:', error);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await login(formData.email, formData.password);
+      navigate('/home');
+    } catch (error) {
+      console.error('Authentication failed:', error);
+    }
+  };
 
-    return (
+  return (
         <div className="login-card">
             <div className="w-full">
                 <div className="text-center">
@@ -105,3 +96,4 @@ const LogIn = () => {
 };
 
 export default LogIn;
+

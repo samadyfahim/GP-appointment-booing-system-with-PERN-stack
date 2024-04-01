@@ -1,0 +1,7 @@
+# Generate private key
+openssl genpkey -algorithm RSA -out private.key
+# Generate certificate signing request (CSR)
+openssl req -new -key private.key -out csr.pem -subj "/CN=localhost"
+
+# Generate self-signed certificate
+openssl x509 -req -days 365 -in csr.pem -signkey private.key -out certificate.crt
