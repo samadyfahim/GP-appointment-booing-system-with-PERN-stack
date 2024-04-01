@@ -38,10 +38,6 @@ const userController = require('./controllers/UserController');
     routing module defined in the file "./routes/root.js". 
     The routes defined in that file will be prefixed with "/" (root).
 */
-
-// app.use('/', express.static(path.join(__dirname, '/rout')))
-
-
 app.use('/', require('./routes/root'));
 app.get('/users', userController.getUsers);
 app.post('/newUser', userController.createUser);
@@ -68,7 +64,7 @@ app.all('*', (req , res) => {
     }
 })
 
-
+//https
 // Set up HTTPS server
 const privateKeyPath = 'server.key';
 const certificatePath = 'server.crt';

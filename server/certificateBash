@@ -5,3 +5,16 @@ openssl req -new -key private.key -out csr.pem -subj "/CN=localhost"
 
 # Generate self-signed certificate
 openssl x509 -req -days 365 -in csr.pem -signkey private.key -out certificate.crt
+
+
+openssl genrsa -out root.key 2048
+openssl req -x509 -new -nodes -key root.key -sha256 -days 365 -out root.crt
+
+openssl genrsa -out server.key 2048
+openssl req -new -key server.key -out server.csr
+openssl x509 -req -in server.csr -CA root.crt -CAkey root.key -CAcreateserial -out server.crt -days 365 -sha256
+
+
+Certificate request self-signature ok
+subject=C=UK, ST=Swansea, L=Swansea, O=myCare, CN=localhost:5000
+A challenge password []:Ahmady199532

@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../middelware/cookieUtils';
+import signIn from '../middelware/signIn'; 
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -7,6 +9,14 @@ const LogIn = () => {
         email: '',
         password: ''
     });
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const token = getCookie('token');
+        if (token) {
+            navigate('/home'); 
+        }
+    }, [navigate]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -15,23 +25,11 @@ const LogIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:5000/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                const data = await response.json();
-                document.cookie = `token=${data.token}; path=/`;
-                navigate(data.redirectUrl);
-            } else {
-                console.error('Authentication failed');
-            }
-        } catch (error) {
-            console.error('Error occurred during authentication:', error);
+        const signInResult = await signIn(formData);
+        if (signInResult.success) {
+            navigate(signInResult.redirectUrl);
+        } else {
+            setError(signInResult.error);
         }
     };
 
@@ -87,6 +85,9 @@ const LogIn = () => {
                                 Sign in
                             </button>
                         </div>
+                        {error && (
+                            <p className="text-center text-sm error-text">{error}</p>
+                        )}
                         <p className="text-center text-sm text-secondary">
                             Don't have an account yet?{' '}
                             <a
