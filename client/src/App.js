@@ -7,21 +7,13 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppointmentForm from './pages/appointmentReqForm';
 
 
-// function App() {
-//   return (
-//      <LogIn />
-//     //  <AppointmentForm />
-//   );
-// }
 const App = () => {
   return (
-    <Router>
       <Routes>
-        <Route path="/" element={<LogIn />} />
-        <Route path="/home" element={<AppointmentForm />} />
+        <Route path="/" element={<LogIn />}></Route>
+        <Route path="/home" element={<AppointmentForm /> }></Route>      
         {/* Add more routes as needed */}
       </Routes>
-    </Router>
   );
 };
 

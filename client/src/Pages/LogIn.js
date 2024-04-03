@@ -1,36 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../middelware/cookieUtils';
-import signIn from '../middelware/signIn'; 
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import axios from "axios";
 
 const LogIn = () => {
     const navigate = useNavigate();
+    const signIn = useSignIn();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
     });
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        const token = getCookie('token');
-        if (token) {
-            navigate('/home'); 
-        }
-    }, [navigate]);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleSignIn = async (formData) => {
+        try {
+            const response = await axios.post('http://localhost:5000/login', formData);
+            if (response.status === 200) {
+                const { accessToken, refreshToken } = response.data;
+                console.log(refreshToken);
+                signIn({
+                    auth: {
+                        
+                        token: accessToken,
+                        type: 'Bearer'
+                    },
+                    // refresh: refreshToken,
+                    userState: formData.email
+                });
+                navigate('/home');
+            } else {
+                let errorMessage = 'Authentication failed';
+                if (response.status === 404) {
+                    errorMessage = 'User not found';
+                } else if (response.status === 401) {
+                    errorMessage = 'Password is wrong';
+                }
+                setError(errorMessage);
+            }
+        } catch (error) {
+            console.error('Error occurred during authentication:', error);
+            setError('Error occurred during authentication');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const signInResult = await signIn(formData);
-        if (signInResult.success) {
-            navigate(signInResult.redirectUrl);
-        } else {
-            setError(signInResult.error);
-        }
+        await handleSignIn(formData);
     };
 
     return (
@@ -94,7 +114,7 @@ const LogIn = () => {
                                 href="#!"
                                 className="font-semibold text-primary hover:underline focus:text-gray-dark focus:outline-none"
                             >
-                                Contact to your GP
+                                Contact your GP
                             </a>
                             .
                         </p>

@@ -52,11 +52,11 @@ exports.loginUser = [
                 return res.status(401).json({ error: 'Password is wrong' });
             }
 
-            const tokens = jwtTokens({ userId: user.id, userName: user.userName, email: user.email });
-            // res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true })
+            const {accessToken, refreshToken} = jwtTokens({ userId: user.id, userName: user.userName, email: user.email });
+            res.cookie('refresh_token', refreshToken, { httpOnly: true })
 
             // Respond with token and redirect URL
-            res.status(200).json({ tokens, redirectUrl: '/home' });
+            res.status(200).json({ accessToken, refreshToken});
         } catch (error) {
             console.error('Error logging in user:', error);
             res.status(500).json({ error: 'Internal server error' });

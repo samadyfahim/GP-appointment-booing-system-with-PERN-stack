@@ -31,7 +31,7 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 
 // Import controllers
 const patientController = require('./controllers/patientController');
-const userController = require('./controllers/UserController');
+const userController = require('./controllers/userController');
 
 /*
     This sets up a route using the external 
