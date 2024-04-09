@@ -1,14 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const pool = require('../config/dbConn');
-const bcrypt = require('bcryptjs');
+const UserController = require("../controllers/UserController");
 
-router.get('/', async (req, res) => {
+// Define routes
+router.get("/", UserController.getAllUsers);
+router.get("/:id", UserController.getUserById);
+router.post("/", UserController.createUser);
+router.put("/:id", UserController.updateUserById);
+router.delete("/:id", UserController.deleteUserById);
 
-});
-
-router.post('/', async(req, res) => {
-     
-});
+router.get("/users", UserController.getUsers);
+router.post("/newUser", UserController.createUser);
+router.post("/login", UserController.loginUser);
 
 module.exports = router;

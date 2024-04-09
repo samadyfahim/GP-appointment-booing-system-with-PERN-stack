@@ -29,9 +29,6 @@ app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '/public')))
 
 
-// Import controllers
-const patientController = require('./controllers/patientController');
-const userController = require('./controllers/userController');
 
 /*
     This sets up a route using the external 
@@ -42,11 +39,17 @@ const userController = require('./controllers/userController');
 // app.use('/', express.static(path.join(__dirname, '/rout')))
 
 
-app.use('/', require('./routes/root'));
-app.get('/users', userController.getUsers);
-app.post('/newUser', userController.createUser);
-app.post('/login', userController.loginUser);
-app.post('/patients', patientController.createPatient);
+
+
+
+const routesDir = path.join(__dirname, 'routes');
+
+fs.readdirSync(routesDir).forEach(file => {
+    if (file.endsWith('Routes.js')) {
+        const route = require(path.join(routesDir, file));
+        app.use(`/api/`, route);
+    }
+});
 
 
 /*

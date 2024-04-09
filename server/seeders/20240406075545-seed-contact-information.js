@@ -1,10 +1,9 @@
-'use strict';
-const faker = require('faker');
+"use strict";
+const faker = require("faker");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
- 
-   const { Profile, Address } = require('../models');
+  async up(queryInterface, Sequelize) {
+    const { Profile, Address } = require("../models");
 
     // Fetch existing profiles and addresses
     const profiles = await Profile.findAll();
@@ -18,19 +17,23 @@ module.exports = {
       address_id: addresses.id,
       // address_id: addresses[index % addresses.length].id, //address id in a round-robin fashion
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }));
 
-    return queryInterface.bulkInsert('ContactInformations', contactInformationData, {});
+    return queryInterface.bulkInsert(
+      "ContactInformations",
+      contactInformationData,
+      {}
+    );
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     /**
      * Add commands to revert seed here.
      *
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-        return queryInterface.bulkDelete('ContactInformations', null, {});
-  }
+    return queryInterface.bulkDelete("ContactInformations", null, {});
+  },
 };

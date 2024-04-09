@@ -1,70 +1,70 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('AppointmentRequests', {
+    await queryInterface.createTable("AppointmentRequests", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       last_name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       date_of_birth: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       phone_number: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       prefer_time: {
-        type: Sequelize.ENUM('Morning', 'Noon', 'Afternoon','Any'),
+        type: Sequelize.ENUM("Morning", "Noon", "Afternoon", "Any"),
         allowNull: false,
-        defaultValue: 'Any'
+        defaultValue: "Any",
       },
       description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       severity: {
-        type: Sequelize.ENUM('low', 'medium', 'high'),
+        type: Sequelize.ENUM("low", "medium", "high"),
         allowNull: false,
-        defaultValue: 'medium'
+        defaultValue: "medium",
       },
       patient_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Patients',
-          key: 'id'
+          model: "Patients",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       status_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'AppointmentStatuses',
-          key: 'id'
+          model: "AppointmentStatuses",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('AppointmentRequests');
-  }
+    await queryInterface.dropTable("AppointmentRequests");
+  },
 };

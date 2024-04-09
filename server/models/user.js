@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -10,22 +8,25 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasOne(models.Profile, { foreignKey: 'user_id' });
-      User.belongsTo(models.UserType, { foreignKey: 'user_type_id' });
-      User.belongsTo(models.HealthcareProvider, { foreignKey: 'provider_id' });
+      User.hasOne(models.Profile, { foreignKey: "user_id" });
+      User.belongsTo(models.UserType, { foreignKey: "user_type_id" });
+      User.belongsTo(models.HealthcareProvider, { foreignKey: "provider_id" });
 
-      User.hasMany(models.Patient, { foreignKey: 'user_id' });
-      User.hasMany(models.Doctor, { foreignKey: 'user_id' });
-      User.hasMany(models.Admin, { foreignKey: 'user_id' });
+      User.hasMany(models.Patient, { foreignKey: "user_id" });
+      User.hasMany(models.Doctor, { foreignKey: "user_id" });
+      User.hasMany(models.Admin, { foreignKey: "user_id" });
     }
   }
-  User.init({
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
-    email: DataTypes.STRING,
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
+  User.init(
+    {
+      username: DataTypes.STRING,
+      password: DataTypes.STRING,
+      email: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "User",
+    }
+  );
   return User;
 };

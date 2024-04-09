@@ -15,4 +15,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInVzZ
 
 
 ###
-GET http://localhost:5000/users
+GET http://localhost:5000/api/users
+
+
+###
+GET http://localhost:5000/api/patients/21/appointments
+

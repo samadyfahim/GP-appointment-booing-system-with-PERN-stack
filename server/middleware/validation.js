@@ -18,7 +18,6 @@ const validateHasParameters = (...args) => {
   };
 };
 
-
 // these will use for user regestration if i have implemented.
 const validatePasswordLength = (req, res, next) => {
   const { password } = req.body;
@@ -31,7 +30,8 @@ const validatePasswordLength = (req, res, next) => {
 
 const validateEmailFormat = (req, res, next) => {
   const { email } = req.body;
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!!email && re.test(String(email).toLowerCase())) {
     next();
   } else {
@@ -39,4 +39,8 @@ const validateEmailFormat = (req, res, next) => {
   }
 };
 
-module.exports = { validateHasParameters, validatePasswordLength, validateEmailFormat };
+module.exports = {
+  validateHasParameters,
+  validatePasswordLength,
+  validateEmailFormat,
+};

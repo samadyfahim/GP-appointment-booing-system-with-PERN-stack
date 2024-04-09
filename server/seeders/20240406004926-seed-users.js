@@ -1,9 +1,9 @@
-'use strict';
-const faker = require('faker');
+"use strict";
+const faker = require("faker");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const { HealthcareProvider, UserType } = require('../models'); // Import HealthcareProvider and UserType models
+    const { HealthcareProvider, UserType } = require("../models"); // Import HealthcareProvider and UserType models
 
     // Fetch all existing healthcare providers and user types
     const healthcareProviders = await HealthcareProvider.findAll();
@@ -17,10 +17,10 @@ module.exports = {
       provider_id: faker.random.arrayElement(healthcareProviders).id,
       user_type_id: faker.random.arrayElement(userTypes).id,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     }));
 
-    return queryInterface.bulkInsert('Users', usersData, {});
+    return queryInterface.bulkInsert("Users", usersData, {});
   },
 
   async down(queryInterface, Sequelize) {
@@ -30,6 +30,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    await queryInterface.bulkDelete('Users', null, {});
-  }
+    await queryInterface.bulkDelete("Users", null, {});
+  },
 };
