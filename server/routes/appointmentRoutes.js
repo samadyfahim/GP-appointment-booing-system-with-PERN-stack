@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const appointmentController = require('../controllers/AppointmentController');
+const { authenticateToken } = require("../middleware/authenticateToken");
+
 
 // Routes for appointments
 // router.get('/', appointmentController.getAllAppointments);
@@ -10,10 +12,9 @@ const appointmentController = require('../controllers/AppointmentController');
 // router.delete('/:id', appointmentController.deleteAppointmentById);
 
 // Get appointments for a patient
-router.get('/patients/:patient_id/appointments', appointmentController.getAllAppointments);
 
 // Get appointments for a doctor
-router.get('/doctors/:doctor_id/appointments', appointmentController.getAllAppointments);
+router.get('/doctors/appointments', appointmentController.getAllAppointments);
 
 
 module.exports = router;

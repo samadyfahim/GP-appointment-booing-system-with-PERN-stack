@@ -1,7 +1,17 @@
 "use strict";
 const bcrypt = require("bcryptjs");
 const jwtTokens = require("../utils/jwtToken");
-const { User } = require("../models");
+const {
+  Appointment,
+  Patient,
+  Doctor,
+  AppointmentStatus,
+  User,
+  Profile,
+  Prescription
+} = require("../models");
+const { Sequelize } = require("sequelize"); 
+
 
 // Function to create a new user
 exports.createUser = async (req, res) => {
@@ -111,14 +121,29 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // Get user by ID
-exports.getUserById = async (req, res) => {
-  const { id } = req.params;
+module.exports.getUserNameAndEmailById = async (req, res) => {
   try {
-    const user = await User.findByPk(id);
+    const { userId } = req.user;
+    const user = await User.findByPk(userId, {
+      include: [
+        {
+          model: Profile,
+          attributes: ["first_name", "last_name"],
+        },
+      ],
+      attributes: ["email"],
+    });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.json(user);
+
+    const userInfo = {
+      name: `${user.Profile.first_name} ${user.Profile.last_name}`,
+      email: user.email,
+    };
+
+    res.json(userInfo);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -167,5 +192,121 @@ exports.deleteUserById = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.user;
+
+    const patient = await Patient.findOne({
+      where: { user_id: userId },
+      raw: true,
+    });
+    const doctor = await Doctor.findOne({
+      where: { user_id: userId },
+      raw: true,
+    });
+
+    if (!patient && !doctor) {
+      return res.status(404).send("User does not have appointments.");
+    }
+
+    // Build the condition based on available profiles
+    let condition = {};
+    if (patient && doctor) {
+      condition = {
+        [Sequelize.Op.or]: [
+          { patient_id: patient.id },
+          { doctor_id: doctor.id },
+        ],
+      };
+    } else if (patient) {
+      condition = { patient_id: patient.id };
+    } else if (doctor) {
+      condition = { doctor_id: doctor.id };
+    }
+
+    // Fetch appointments based on the built condition
+    const appointments = await Appointment.findAll({
+      where: condition,
+      include: [
+        {
+          model: Patient,
+          include: [{ model: User, include: [Profile] }],
+        },
+        {
+          model: Doctor,
+          include: [{ model: User, include: [Profile] }],
+        },
+        { model: AppointmentStatus },
+      ],
+    });
+
+    return res.json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments for user:", error);
+    return res.status(500).send(error.message);
+  }
+};
+
+
+exports.getPrescriptionsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.user;
+
+    // First, check if the user is a patient or a doctor by their user ID
+    const patient = await Patient.findOne({
+      where: { user_id: userId },
+      raw: true,
+    });
+    const doctor = await Doctor.findOne({
+      where: { user_id: userId },
+      raw: true,
+    });
+
+    let condition = {};
+    if (patient && doctor) {
+      condition = {
+        [Sequelize.Op.or]: [
+          { patient_id: patient.id },
+          { doctor_id: doctor.id },
+        ],
+      };
+    } else if (patient) {
+      condition = { patient_id: patient.id };
+    } else if (doctor) {
+      condition = { doctor_id: doctor.id };
+    }
+
+    // Fetch prescriptions based on the determined role
+    const prescriptions = await Prescription.findAll({
+      where: condition,
+      include: [
+        {
+          model: Patient,
+          include: [
+            {
+              model: User,
+              include: [Profile],
+            },
+          ],
+        },
+        {
+          model: Doctor,
+          include: [
+            {
+              model: User,
+              include: [Profile], 
+            },
+          ],
+        },
+      ],
+    });
+
+    res.json(prescriptions);
+  } catch (error) {
+    console.error("Error fetching prescriptions for user:", error);
+    res.status(500).send(error.message);
   }
 };

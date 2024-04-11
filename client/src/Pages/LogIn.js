@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import axios from "axios";
+import handleSignIn from '../hooks/handleSignIn';
 
 const LogIn = () => {
     const navigate = useNavigate();
@@ -17,40 +17,13 @@ const LogIn = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSignIn = async (formData) => {
-        try {
-            const response = await axios.post('http://localhost:5000/login', formData);
-            if (response.status === 200) {
-                const { accessToken, refreshToken } = response.data;
-                console.log(refreshToken);
-                signIn({
-                    auth: {
-                        
-                        token: accessToken,
-                        type: 'Bearer'
-                    },
-                    // refresh: refreshToken,
-                    userState: formData.email
-                });
-                navigate('/home');
-            } else {
-                let errorMessage = 'Authentication failed';
-                if (response.status === 404) {
-                    errorMessage = 'User not found';
-                } else if (response.status === 401) {
-                    errorMessage = 'Password is wrong';
-                }
-                setError(errorMessage);
-            }
-        } catch (error) {
-            console.error('Error occurred during authentication:', error);
-            setError('Error occurred during authentication');
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleSignIn(formData);
+        try {
+            await handleSignIn(formData, signIn, navigate, setError);
+        } catch (error) {
+            setError(error.message);
+        }
     };
 
     return (

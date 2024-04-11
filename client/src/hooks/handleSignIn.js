@@ -8,7 +8,6 @@ const handleSignIn = async (formData, signIn, navigate, setError) => {
     );
     if (response.data.ok) {
       const { accessToken, refreshToken } = response.data;
-      console.log(refreshToken);
       signIn({
         auth: {
           token: accessToken,

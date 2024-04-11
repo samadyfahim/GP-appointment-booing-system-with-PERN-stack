@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 // Middleware function to authenticate JWT token
-function authenticateToken(req, res, next) {
+const authenticateToken = (req, res, next) => {
   const authHeader = req.headers["authorization"]; // Use req.headers instead of req.header
   const token = authHeader && authHeader.split(" ")[1]; // Corrected the split method
   if (token == null) {
@@ -15,6 +15,6 @@ function authenticateToken(req, res, next) {
     req.user = decodedToken;
     next(); // Call next() to move to the next middleware
   });
-}
+};
 
-module.exports = authenticateToken; // Export the middleware function
+module.exports = { authenticateToken };
