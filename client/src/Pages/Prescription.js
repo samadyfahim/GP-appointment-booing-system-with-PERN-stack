@@ -20,6 +20,7 @@ function Prescription() {
 
   return (
     <div className="overflow-x-auto">
+      <h1 class="text-center text-4xl font-bold"> All Prescription </h1>
       <Table>
         <Table.Head>
           <Table.HeadCell>Prescription ID</Table.HeadCell>
@@ -35,29 +36,19 @@ function Prescription() {
         <Table.Body className="divide-y">
           {prescriptions.map((prescription) => (
             <Table.Row
-              key={prescription.id}
+              key={prescription.prescriptionId}
               className="bg-white dark:border-gray-700 dark:bg-gray-800"
             >
-              <Table.Cell>{prescription.id}</Table.Cell>
-              <Table.Cell>
-                {prescription.Patient?.User?.Profile
-                  ? `${prescription.Patient.User.Profile.first_name} ${prescription.Patient.User.Profile.last_name}`
-                  : "Unknown"}
-              </Table.Cell>
-              <Table.Cell>
-                {prescription.Doctor?.User?.Profile
-                  ? `${prescription.Doctor.User.Profile.first_name} ${prescription.Doctor.User.Profile.last_name}`
-                  : "Unknown"}
-              </Table.Cell>
-              <Table.Cell>{prescription.medication_name}</Table.Cell>
+              <Table.Cell>{prescription.prescriptionId}</Table.Cell>
+              <Table.Cell>{prescription.patientName}</Table.Cell>
+              <Table.Cell>{prescription.doctorName}</Table.Cell>
+              <Table.Cell>{prescription.medicationName}</Table.Cell>
               <Table.Cell>{prescription.dosage}</Table.Cell>
               <Table.Cell>{prescription.frequency}</Table.Cell>
               <Table.Cell>{prescription.duration}</Table.Cell>
               <Table.Cell>
-                {prescription.prescription_date
-                  ? new Date(
-                      prescription.prescription_date
-                    ).toLocaleDateString()
+                {prescription.prescriptionDate
+                  ? new Date(prescription.prescriptionDate).toLocaleDateString()
                   : "N/A"}
               </Table.Cell>
               <Table.Cell>{prescription.notes}</Table.Cell>

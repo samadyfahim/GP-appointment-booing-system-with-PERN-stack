@@ -23,6 +23,7 @@ function Appointments() {
 
   return (
     <div className="overflow-x-auto">
+      <h1>All Appointments </h1>
       <Table hoverable={true}>
         <Table.Head>
           <Table.HeadCell>Appointment ID</Table.HeadCell>
