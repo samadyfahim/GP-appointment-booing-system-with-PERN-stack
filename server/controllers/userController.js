@@ -251,11 +251,13 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
 };
 
 
+
+
 exports.getPrescriptionsByUserId = async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // First, check if the user is a patient or a doctor by their user ID
+    // Find whether the user is a patient or a doctor
     const patient = await Patient.findOne({
       where: { user_id: userId },
       raw: true,
@@ -267,6 +269,7 @@ exports.getPrescriptionsByUserId = async (req, res) => {
 
     let condition = {};
     if (patient && doctor) {
+      // If the user is both patient and doctor, fetch prescriptions where user is either the patient or the doctor
       condition = {
         [Sequelize.Op.or]: [
           { patient_id: patient.id },
@@ -274,9 +277,14 @@ exports.getPrescriptionsByUserId = async (req, res) => {
         ],
       };
     } else if (patient) {
+      // If the user is only a patient, fetch prescriptions where the user is the patient
       condition = { patient_id: patient.id };
     } else if (doctor) {
+      // If the user is only a doctor, fetch prescriptions where the user is the doctor
       condition = { doctor_id: doctor.id };
+    } else {
+      // If the user is neither a patient nor a doctor, return an empty array of prescriptions
+      return res.json([]);
     }
 
     // Fetch prescriptions based on the determined role
@@ -297,14 +305,30 @@ exports.getPrescriptionsByUserId = async (req, res) => {
           include: [
             {
               model: User,
-              include: [Profile], 
+              include: [Profile],
             },
           ],
         },
       ],
     });
 
-    res.json(prescriptions);
+    const formattedPrescriptions = prescriptions.map((prescription) => ({
+      prescriptionId: prescription.id,
+      patientName: prescription.Patient?.User?.Profile
+        ? `${prescription.Patient.User.Profile.first_name} ${prescription.Patient.User.Profile.last_name}`
+        : "Unknown",
+      doctorName: prescription.Doctor?.User?.Profile
+        ? `${prescription.Doctor.User.Profile.first_name} ${prescription.Doctor.User.Profile.last_name}`
+        : "Unknown",
+      medicationName: prescription.medication_name,
+      dosage: prescription.dosage,
+      frequency: prescription.frequency,
+      duration: prescription.duration,
+      prescriptionDate: prescription.prescription_date,
+      notes: prescription.notes,
+    }));
+
+    res.json(formattedPrescriptions);
   } catch (error) {
     console.error("Error fetching prescriptions for user:", error);
     res.status(500).send(error.message);

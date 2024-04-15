@@ -12,7 +12,7 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    const { User } = require("../models"); // Import User model
+    const { User } = require("../models");
 
     // Fetch all existing users
     const users = await User.findAll();

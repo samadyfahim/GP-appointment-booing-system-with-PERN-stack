@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       User.belongsTo(models.UserType, { foreignKey: "user_type_id" });
       User.belongsTo(models.HealthcareProvider, { foreignKey: "provider_id" });
 
-      User.hasMany(models.Patient, { foreignKey: "user_id" });
-      User.hasMany(models.Doctor, { foreignKey: "user_id" });
-      User.hasMany(models.Admin, { foreignKey: "user_id" });
+      User.hasOne(models.Patient, { foreignKey: "user_id" });
+      User.hasOne(models.Doctor, { foreignKey: "user_id" });
+      User.hasOne(models.Admin, { foreignKey: "user_id" });
     }
   }
   User.init(

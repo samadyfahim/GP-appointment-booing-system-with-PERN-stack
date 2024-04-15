@@ -3,27 +3,22 @@ const faker = require("faker");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    /**
-     * Add seed commands here.
-     *
-     * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
-     *   isBetaMember: false
-     * }], {});
-     */
-    const { User } = require("../models"); // Import User model
+    const { User } = require("../models");
 
     // Fetch all existing users
     const users = await User.findAll();
 
-    // Generate fake patients
-    const patientsData = users.map((user) => ({
+    // Calculate the half point of the users array
+    const halfIndex = Math.ceil(users.length / 2);
+
+    // Generate fake patients only for the first half of users
+    const patientsData = users.slice(0, halfIndex).map((user) => ({
       user_id: user.id,
       createdAt: new Date(),
       updatedAt: new Date(),
     }));
 
+    // Bulk insert for the first half users as patients
     return queryInterface.bulkInsert("Patients", patientsData, {});
   },
 

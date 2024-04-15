@@ -3,7 +3,7 @@ const faker = require("faker");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const { Patient, Doctor } = require("../models"); // Import Patient and Doctor models
+    const { Patient, Doctor } = require("../models");
 
     // Fetch all existing patients and doctors
     const patients = await Patient.findAll();
@@ -15,7 +15,7 @@ module.exports = {
       doctor_id: faker.random.arrayElement(doctors).id,
       prescription_date: faker.date.past(),
       medication_name: faker.lorem.words(),
-      dosage: faker.datatype.number({ min: 1, max: 10 }), // Update to faker.datatype.number()
+      dosage: faker.datatype.number({ min: 1, max: 10 }),
       frequency: faker.random.arrayElement([
         "Once daily",
         "Twice daily",

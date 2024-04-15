@@ -3,7 +3,7 @@ const faker = require("faker");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const { Doctor } = require("../models"); // Import Doctor model
+    const { Doctor } = require("../models");
 
     // Fetch all existing doctors
     const doctors = await Doctor.findAll();

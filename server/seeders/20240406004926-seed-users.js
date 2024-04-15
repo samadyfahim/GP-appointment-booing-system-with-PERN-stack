@@ -3,14 +3,14 @@ const faker = require("faker");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const { HealthcareProvider, UserType } = require("../models"); // Import HealthcareProvider and UserType models
+    const { HealthcareProvider, UserType } = require("../models");
 
     // Fetch all existing healthcare providers and user types
     const healthcareProviders = await HealthcareProvider.findAll();
     const userTypes = await UserType.findAll();
 
     // Generate fake users
-    const usersData = Array.from({ length: 10 }).map(() => ({
+    const usersData = Array.from({ length: 100 }).map(() => ({
       username: faker.internet.userName(),
       password: "$2a$10$Fp6Xullim3IlDvcll1FWgeWumwsJFLFmsBWKgnCw8aaT1uzap3cEC",
       email: faker.internet.email(),

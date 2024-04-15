@@ -16,7 +16,6 @@ module.exports = {
       { status: "Scheduled", createdAt: new Date(), updatedAt: new Date() },
       { status: "Cancelled", createdAt: new Date(), updatedAt: new Date() },
       { status: "Completed", createdAt: new Date(), updatedAt: new Date() },
-      // Add more statuses as needed
     ];
 
     return queryInterface.bulkInsert(
