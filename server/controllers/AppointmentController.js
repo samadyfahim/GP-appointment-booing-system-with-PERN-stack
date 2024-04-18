@@ -1,4 +1,6 @@
 const appointmentService = require('../services/appointmentService');
+const ReminderService = require("../services/appointmentService");
+
 const {
   Appointment,
   Patient,
@@ -6,6 +8,7 @@ const {
   AppointmentStatus,
   User,
   Profile,
+  ContactInformation
 } = require("../models");
 
 
@@ -20,26 +23,12 @@ exports.getAllAppointments = async (req, res) => {
   }
 };
 
-// Get appointment by ID
-exports.getAppointmentById = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const appointment = await Appointment.findByPk(id);
-    if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
-    res.json(appointment);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
-  const { patient_id, doctor_id, appointment_datetime, status_id, provider_id } = req.body;
+  const { patient_id, doctor_id, appointment_datetime, status_id } = req.body;
   try {
-    const appointment = await Appointment.create({ patient_id, doctor_id, appointment_datetime, status_id, provider_id });
+    const appointment = await Appointment.create({ patient_id, doctor_id, appointment_datetime, status_id });
     res.status(201).json(appointment);
   } catch (error) {
     console.error(error);
@@ -47,33 +36,7 @@ exports.createAppointment = async (req, res) => {
   }
 };
 
-exports.updateAppointmentStatus = async (req, res) => {
-  const { patient_id } = req.params;
-  const { status_name } = req.body; // Assuming status_name is provided in the request body
-  try {
-    const result = await updateAppointmentStatusForPatient(patient_id, status_name);
-    res.json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Failed to update appointment statuses' });
-  }
-};
 
-// Delete appointment by ID
-exports.deleteAppointmentById = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const appointment = await Appointment.findByPk(id);
-    if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
-    await appointment.destroy();
-    res.json({ message: 'Appointment deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server Error' });
-  }
-};
 
 
 // Get appointments for a specific user
@@ -91,6 +54,68 @@ exports.getUserAppointments = async (req, res) => {
 };
 
 
+
+// Function to send appointment reminders to patients
+exports.sendAppointmentReminders = async () => {
+  try {
+    // Fetch upcoming appointments
+    const upcomingAppointments = await Appointments.findAll({
+      where: {
+        appointment_datetime: {
+          [Sequelize.Op.gte]: new Date(),
+        },
+      },
+      include: [
+        {
+          model: Patient,
+          include: [
+            {
+              model: User,
+              include: ContactInformation,
+            },
+          ],
+        },
+      ],
+    });
+    // Send reminders for each appointment
+    upcomingAppointments.forEach((appointment) => {
+      const { patient } = appointment;
+      const { email, phone } = patient.user.contactInformation;
+      const appointmentDateTime = new Date(appointment.appointment_datetime);
+
+      // Schedule reminders for one day and one hour before the appointment
+      // Assuming you have functions to format the reminder messages
+      const oneDayBefore = new Date(appointmentDateTime);
+      oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+      scheduleReminder(oneDayBefore, () => {
+        ReminderService.sendSMSReminder(phone, formatSMSReminder(appointment));
+        ReminderService.sendEmailReminder(
+          email,
+          "Appointment Reminder",
+          formatEmailReminder(appointment)
+        );
+      });
+
+      const oneHourBefore = new Date(appointmentDateTime);
+      oneHourBefore.setHours(oneHourBefore.getHours() - 1);
+      scheduleReminder(oneHourBefore, () => {
+        ReminderService.sendSMSReminder(
+          phone,
+          "Your appointment is scheduled in one hour."
+        );
+        ReminderService.sendEmailReminder(
+          email,
+          "Appointment Reminder",
+          "Dear patient, Your appointment is scheduled in one hour."
+        );
+      });
+    });
+  } catch (error) {
+    console.error("Error sending appointment reminders:", error);
+  }
+};
+
+
 exports.getAppointmentsWithDetails = async (req, res) => {
     try {
         const appointments = await Appointment.findAll({
@@ -100,7 +125,7 @@ exports.getAppointmentsWithDetails = async (req, res) => {
                     include: [
                         {
                             model: User,
-                            include: [Profile] // Assuming each user has one profile
+                            include: [Profile]
                         }
                     ]
                 },
@@ -109,7 +134,7 @@ exports.getAppointmentsWithDetails = async (req, res) => {
                     include: [
                         {
                             model: User,
-                            include: [Profile] // Doctor's user and profile
+                            include: [Profile]
                         }
                     ]
                 },

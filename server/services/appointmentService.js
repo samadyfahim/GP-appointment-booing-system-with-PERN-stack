@@ -29,7 +29,7 @@ const extractAppointmentDetails = (appointment) => {
 };
 
 // Get appointments for a patient with a specific status
-// i have saperate function in case add want to extract more details. but not nececerly
+// I have saperate function in case add want to extract more details. but not nececerly
 exports.getAppointmentForPatientsWithStatus = async (patientId, statusName) => {
   try {
     const appointments = await Appointment.findAll({

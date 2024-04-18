@@ -1,5 +1,5 @@
+import React, { useState } from "react";
 import { Sidebar } from "flowbite-react";
-import { BiBuoy } from "react-icons/bi";
 import {
   FaClinicMedical,
   FaCommentMedical,
@@ -14,44 +14,85 @@ import { HiViewBoards } from "react-icons/hi";
 import { GrSchedule } from "react-icons/gr";
 import { IoSettings, IoLogOut } from "react-icons/io5";
 
-function SidebarComponent() {
+function SidebarComponent({ onItemClick }) {
+  const handleItemClick = (pageComponent) => {
+    onItemClick(pageComponent);
+  };
+
   return (
     <Sidebar>
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          <Sidebar.Item href="/Dashboard" icon={FaClinicMedical}>
+          <Sidebar.Item
+            href="/Dashboard"
+            icon={FaClinicMedical}
+            onClick={() => handleItemClick("Home")}
+          >
             Home
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Appointments" icon={HiViewBoards}>
+          <Sidebar.Item
+            href="/Dashboard/Appointments"
+            icon={HiViewBoards}
+            onClick={() => handleItemClick("Appointments")}
+          >
             Appointments
           </Sidebar.Item>
           <Sidebar.Item
-            href="Dashboard/Prescription"
+            href="/Dashboard/Prescription"
             icon={MdOutlineMedicationLiquid}
+            onClick={() => handleItemClick("Prescription")}
           >
             Prescription
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Schedualing" icon={GrSchedule}>
-            Schedualing
+          <Sidebar.Item
+            href="/Dashboard/Schedualing"
+            icon={GrSchedule}
+            onClick={() => handleItemClick("Scheduling")}
+          >
+            Scheduling
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/History" icon={MdWorkHistory}>
+          <Sidebar.Item
+            href="/Dashboard/History"
+            icon={MdWorkHistory}
+            onClick={() => handleItemClick("History")}
+          >
             History
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Inbox" icon={FaCommentMedical}>
+          <Sidebar.Item
+            href="/Dashboard/Inbox"
+            icon={FaCommentMedical}
+            onClick={() => handleItemClick("Inbox")}
+          >
             Inbox
           </Sidebar.Item>
         </Sidebar.ItemGroup>
         <Sidebar.ItemGroup>
-          <Sidebar.Item href="/" icon={IoLogOut}>
+          <Sidebar.Item
+            href="/"
+            icon={IoLogOut}
+            onClick={() => handleItemClick("Sign Out")}
+          >
             Sign Out
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Settings" icon={IoSettings}>
+          <Sidebar.Item
+            href="/Dashboard/Settings"
+            icon={IoSettings}
+            onClick={() => handleItemClick("Settings")}
+          >
             Settings
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Contact" icon={MdContactPhone}>
+          <Sidebar.Item
+            href="/Dashboard/Contact"
+            icon={MdContactPhone}
+            onClick={() => handleItemClick("Contact")}
+          >
             Contact
           </Sidebar.Item>
-          <Sidebar.Item href="Dashboard/Help" icon={FaHireAHelper}>
+          <Sidebar.Item
+            href="/Dashboard/Help"
+            icon={FaHireAHelper}
+            onClick={() => handleItemClick("Help")}
+          >
             Help
           </Sidebar.Item>
         </Sidebar.ItemGroup>
@@ -59,4 +100,5 @@ function SidebarComponent() {
     </Sidebar>
   );
 }
+
 export default SidebarComponent;

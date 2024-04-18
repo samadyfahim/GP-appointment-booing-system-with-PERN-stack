@@ -16,7 +16,7 @@ const handleSignIn = async (formData, signIn, navigate, setError) => {
         // refresh: refreshToken,
         userState: formData.email,
       });
-      navigate("/home");
+      navigate("/Dashboard");
     }
   } catch (error) {
     if (error.response) {

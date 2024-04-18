@@ -25,9 +25,7 @@ router.get(
   UserController.getPrescriptionsByUserId
 );
 
-router.post("/", UserController.createUser);
-router.put("/:id", UserController.updateUserById);
-router.delete("/:id", UserController.deleteUserById);
+
 
 router.get("/users", UserController.getUsers);
 router.post("/newUser", UserController.createUser);

@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
       ContactInformation.belongsTo(models.Profile, {
         foreignKey: "profile_id",
       });
@@ -21,8 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       email: DataTypes.STRING,
       phone: DataTypes.STRING,
-      //profile_id: DataTypes.INTEGER,
-      //address_id: DataTypes.INTEGER
+      
     },
     {
       sequelize,

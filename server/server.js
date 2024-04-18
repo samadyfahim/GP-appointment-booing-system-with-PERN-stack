@@ -11,6 +11,9 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const corsOptions = require('./config/corsOptions');
 const bodyParser = require('body-parser');
+const cron = require("node-cron");
+const sendAppointmentReminders = require('./services/reminderService'); // Your reminder service
+
 
 console.log(process.env.NODE_ENV);
 
@@ -90,16 +93,15 @@ const certificatePath = 'server.crt';
 //     console.error('Missing SSL certificate or private key.');
 // }
 
+setInterval(() => {
+  console.log("Checking for upcoming appointments...");
+  sendAppointmentReminders.sendAppointmentReminders;
+}, 60 * 60 * 1000); 
+
+
+
 
 const PORT = process.env.PORT || 5000;
-
-
-/*
-    This sets the server to listen on the specified 
-    port (either the one provided by the environment 
-    variable PORT or the default port 3500) and logs a 
-    message when the server is successfully started.
-*/
 app.listen(PORT, () => console.log(`server running on port ${PORT}`))
 
 app.use(errorHandler)
