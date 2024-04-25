@@ -16,6 +16,11 @@ module.exports = {
       { status: "Scheduled", createdAt: new Date(), updatedAt: new Date() },
       { status: "Cancelled", createdAt: new Date(), updatedAt: new Date() },
       { status: "Completed", createdAt: new Date(), updatedAt: new Date() },
+      {
+        status: "Recieved",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ];
 
     return queryInterface.bulkInsert(

@@ -8,10 +8,9 @@ const {
   AppointmentStatus,
   User,
   Profile,
-  Prescription
+  Prescription,
 } = require("../models");
-const { Sequelize } = require("sequelize"); 
-
+const { Sequelize } = require("sequelize");
 
 // Function to create a new user
 exports.createUser = async (req, res) => {
@@ -55,7 +54,7 @@ exports.updatePassword = async (req, res) => {
     const { email, oldPassword, newPassword } = req.body;
     const user = await authenticateUser(email, oldPassword);
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedNewPassword; // Changed hash_password to password
+    user.password = hashedNewPassword;
     await user.save();
     res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
@@ -81,7 +80,7 @@ const authenticateUser = async (email, password) => {
   if (!user) {
     throw new Error("User does not exist");
   }
-  const passwordMatch = await comparePassword(password, user.password); // Changed hash_password to password
+  const passwordMatch = await comparePassword(password, user.password);
   if (!passwordMatch) {
     throw new Error("Incorrect password");
   }
@@ -90,8 +89,8 @@ const authenticateUser = async (email, password) => {
 
 // Function to generate JWT tokens for user
 const generateTokens = (user) => {
-  const { id, username, email } = user; // Changed userName to username
-  return jwtTokens({ userId: id, username, email }); // Changed userName to username
+  const { id, username, email } = user;
+  return jwtTokens({ userId: id, username, email });
 };
 
 // Function to set refresh token cookie
@@ -162,28 +161,11 @@ exports.createUser = async (req, res) => {
   }
 };
 
-// Update user by ID
-exports.updateUserById = async (req, res) => {
-  const { id } = req.params;
-  const { username, password, email } = req.body;
-  try {
-    let user = await User.findByPk(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    user = await user.update({ username, password, email });
-    res.json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
 // Delete user by ID
 exports.deleteUserById = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.user;
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -211,8 +193,6 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
     if (!patient && !doctor) {
       return res.status(404).send("User does not have appointments.");
     }
-
-    // Build the condition based on available profiles
     let condition = {};
     if (patient && doctor) {
       condition = {
@@ -250,14 +230,9 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
   }
 };
 
-
-
-
 exports.getPrescriptionsByUserId = async (req, res) => {
   try {
     const { userId } = req.user;
-
-    // Find whether the user is a patient or a doctor
     const patient = await Patient.findOne({
       where: { user_id: userId },
       raw: true,
@@ -269,7 +244,6 @@ exports.getPrescriptionsByUserId = async (req, res) => {
 
     let condition = {};
     if (patient && doctor) {
-      // If the user is both patient and doctor, fetch prescriptions where user is either the patient or the doctor
       condition = {
         [Sequelize.Op.or]: [
           { patient_id: patient.id },
@@ -277,13 +251,10 @@ exports.getPrescriptionsByUserId = async (req, res) => {
         ],
       };
     } else if (patient) {
-      // If the user is only a patient, fetch prescriptions where the user is the patient
       condition = { patient_id: patient.id };
     } else if (doctor) {
-      // If the user is only a doctor, fetch prescriptions where the user is the doctor
       condition = { doctor_id: doctor.id };
     } else {
-      // If the user is neither a patient nor a doctor, return an empty array of prescriptions
       return res.json([]);
     }
 

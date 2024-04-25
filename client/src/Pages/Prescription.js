@@ -20,7 +20,7 @@ function Prescription() {
 
   return (
     <div className="overflow-x-auto">
-      <h1 class="text-center text-4xl font-bold"> All Prescription </h1>
+      <h1 className="text-center text-4xl font-bold"> All Prescription </h1>
       <Table>
         <Table.Head>
           <Table.HeadCell>Prescription ID</Table.HeadCell>

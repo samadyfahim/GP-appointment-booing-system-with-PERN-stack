@@ -15,11 +15,17 @@ module.exports = {
       last_name: {
         type: Sequelize.STRING,
       },
+      email: {
+        type: Sequelize.STRING,
+      },
       date_of_birth: {
         type: Sequelize.DATE,
       },
       phone_number: {
         type: Sequelize.STRING,
+      },
+      prefer_date: {
+        type: Sequelize.DATE,
       },
       prefer_time: {
         type: Sequelize.ENUM("Morning", "Noon", "Afternoon", "Any"),

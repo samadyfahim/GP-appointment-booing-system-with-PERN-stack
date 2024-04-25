@@ -3,29 +3,21 @@
 import axios from "axios";
 
 const axiosWithAuth = () => {
-  // Get the access token from cookie
   const accessToken = getCookieValue("_auth");
-
-  // Create an instance of axios
   const instance = axios.create({
-    baseURL: "http://localhost:5000", // Set your baseURL here
-    // You can add other default configurations here
+    baseURL: "http://localhost:5000",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   });
 
-  // Add a response interceptor
   instance.interceptors.response.use(
     function (response) {
-      // Do something with response data
       return response;
     },
     function (error) {
-      // Do something with response error
       if (error.response.status === 401) {
-        // Handle unauthorized errors, for example, redirect to login page
-        // window.location.href = '/login';
+        //i need to redirect to sign out the user
       }
       return Promise.reject(error);
     }

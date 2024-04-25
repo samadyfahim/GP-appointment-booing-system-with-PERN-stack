@@ -9,8 +9,10 @@ module.exports = {
     const appointmentRequestsData = patients.map((patient) => ({
       name: faker.name.firstName(),
       last_name: faker.name.lastName(),
+      email: faker.internet.email(),
       date_of_birth: faker.date.past(),
       phone_number: faker.phone.phoneNumber(),
+      prefer_date: faker.date.past(),
       prefer_time: faker.random.arrayElement([
         "Morning",
         "Noon",
@@ -25,7 +27,6 @@ module.exports = {
       updatedAt: new Date(),
     }));
 
-    // Insert appointment requests into the database
     return queryInterface.bulkInsert(
       "AppointmentRequests",
       appointmentRequestsData,

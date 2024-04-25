@@ -1,4 +1,4 @@
-const appointmentService = require('../services/appointmentService');
+const appointmentService = require("../services/appointmentService");
 const ReminderService = require("../services/appointmentService");
 
 const {
@@ -8,9 +8,8 @@ const {
   AppointmentStatus,
   User,
   Profile,
-  ContactInformation
+  ContactInformation,
 } = require("../models");
-
 
 // Get all appointments
 exports.getAllAppointments = async (req, res) => {
@@ -19,46 +18,44 @@ exports.getAllAppointments = async (req, res) => {
     res.json(appointments);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server Error" });
   }
 };
-
 
 // Create a new appointment
 exports.createAppointment = async (req, res) => {
   const { patient_id, doctor_id, appointment_datetime, status_id } = req.body;
   try {
-    const appointment = await Appointment.create({ patient_id, doctor_id, appointment_datetime, status_id });
+    const appointment = await Appointment.create({
+      patient_id,
+      doctor_id,
+      appointment_datetime,
+      status_id,
+    });
     res.status(201).json(appointment);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server Error" });
   }
 };
 
-
-
-
 // Get appointments for a specific user
 exports.getUserAppointments = async (req, res) => {
-  const { userId } = req.params; // Assuming userId is passed as a parameter
+  const { userId } = req.user;
   try {
     const appointments = await Appointment.findAll({
-      where: { userId }, // Query appointments where userId matches
+      where: { userId },
     });
     res.json(appointments);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server Error" });
   }
 };
-
-
 
 // Function to send appointment reminders to patients
 exports.sendAppointmentReminders = async () => {
   try {
-    // Fetch upcoming appointments
     const upcomingAppointments = await Appointments.findAll({
       where: {
         appointment_datetime: {
@@ -77,14 +74,10 @@ exports.sendAppointmentReminders = async () => {
         },
       ],
     });
-    // Send reminders for each appointment
     upcomingAppointments.forEach((appointment) => {
       const { patient } = appointment;
       const { email, phone } = patient.user.contactInformation;
       const appointmentDateTime = new Date(appointment.appointment_datetime);
-
-      // Schedule reminders for one day and one hour before the appointment
-      // Assuming you have functions to format the reminder messages
       const oneDayBefore = new Date(appointmentDateTime);
       oneDayBefore.setDate(oneDayBefore.getDate() - 1);
       scheduleReminder(oneDayBefore, () => {
@@ -115,44 +108,40 @@ exports.sendAppointmentReminders = async () => {
   }
 };
 
-
 exports.getAppointmentsWithDetails = async (req, res) => {
-    try {
-        const appointments = await Appointment.findAll({
-            include: [
-                {
-                    model: Patient,
-                    include: [
-                        {
-                            model: User,
-                            include: [Profile]
-                        }
-                    ]
-                },
-                {
-                    model: Doctor,
-                    include: [
-                        {
-                            model: User,
-                            include: [Profile]
-                        }
-                    ]
-                },
-                {
-                    model: AppointmentStatus
-                }
-            ]
-        });
+  try {
+    const appointments = await Appointment.findAll({
+      include: [
+        {
+          model: Patient,
+          include: [
+            {
+              model: User,
+              include: [Profile],
+            },
+          ],
+        },
+        {
+          model: Doctor,
+          include: [
+            {
+              model: User,
+              include: [Profile],
+            },
+          ],
+        },
+        {
+          model: AppointmentStatus,
+        },
+      ],
+    });
 
-        return res.json(appointments);
-    } catch (error) {
-        console.error('Error fetching appointments:', error);
-        return res.status(500).send(error.message);
-    }
+    return res.json(appointments);
+  } catch (error) {
+    console.error("Error fetching appointments:", error);
+    return res.status(500).send(error.message);
+  }
 };
-
-
-
 
 exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
   try {
@@ -170,8 +159,6 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
     if (!patient && !doctor) {
       return res.status(404).send("User does not have appointments.");
     }
-
-    // Build the condition based on available profiles
     let condition = {};
     if (patient && doctor) {
       condition = {
@@ -185,8 +172,6 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
     } else if (doctor) {
       condition = { doctor_id: doctor.id };
     }
-
-    // Fetch appointments based on the built condition
     const appointments = await Appointment.findAll({
       where: condition,
       include: [
@@ -201,7 +186,6 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
         { model: AppointmentStatus },
       ],
     });
-
     return res.json(appointments);
   } catch (error) {
     console.error("Error fetching appointments for user:", error);
@@ -209,5 +193,28 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
   }
 };
 
+// Cancel an appointment by Id
+exports.cancelAppointment = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const appointment = await Appointment.findByPk(id);
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
 
+    const cancelStatus = await AppointmentStatus.findOne({
+      where: { status: "cancel" },
+    });
+    if (!cancelStatus) {
+      return res.status(500).json({ message: "Cancel status not found" });
+    }
 
+    // Update appointment status to "cancel"
+    appointment.status_id = cancelStatus.id;
+    await appointment.save();
+    return res.json(appointment);
+  } catch (error) {
+    console.error("Error canceling appointment:", error);
+    return res.status(500).json({ message: "Server Error" });
+  }
+};

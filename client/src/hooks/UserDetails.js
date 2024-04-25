@@ -8,8 +8,6 @@ const UserDetails = () => {
   const [userProfile, setUserProfile] = useState({ name: "", email: "" });
   const [error, setError] = useState("");
 
-  const token = getCookieValue('_auth');
-
   const accessToken = auth.authState.token;
 
   console.log(accessToken);
@@ -17,8 +15,6 @@ const UserDetails = () => {
   useEffect(() => {
     const getUserNameAndEmail = async () => {
       try {
-        console.log("Access Token:", accessToken);
-
         const response = await axios.get(
           "http://localhost:5000/api/user/nameAndEmail",
           {
@@ -30,7 +26,6 @@ const UserDetails = () => {
         const { name, email } = response.data;
         setUserProfile({ name, email });
       } catch (error) {
-        // Enhanced error handling
         if (error.response) {
           setError(error.response.data.error);
         } else if (error.request) {
@@ -65,6 +60,5 @@ function getCookieValue(name) {
 
   return value.split("=")[1];
 }
-
 
 export default UserDetails;

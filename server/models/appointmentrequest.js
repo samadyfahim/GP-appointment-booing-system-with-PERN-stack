@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       date_of_birth: DataTypes.DATE,
       email: DataTypes.STRING,
       phone_number: DataTypes.STRING,
+      prefer_date: DataTypes.DATE,
       prefer_time: {
         type: DataTypes.ENUM("Morning", "Noon", "Afternoon", "Any"),
         allowNull: false,
