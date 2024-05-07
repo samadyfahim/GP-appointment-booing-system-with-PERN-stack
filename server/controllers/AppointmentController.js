@@ -204,7 +204,7 @@ exports.cancelAppointment = async (req, res) => {
     }
 
     const cancelStatus = await AppointmentStatus.findOne({
-      where: { status: "cancel" },
+      where: { status: "Cancelled" },
     });
     if (!cancelStatus) {
       return res.status(500).json({ message: "Cancel status not found" });
