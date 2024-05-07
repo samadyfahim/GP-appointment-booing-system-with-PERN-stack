@@ -28,12 +28,12 @@ function Appointments() {
       await axiosInstance.put(
         `/api/appointment/appointments/${selectedAppointment.id}`,
         {
-          status: "cancel",
+          status: "Cancel",
         }
       );
       const updatedAppointments = appointments.map((appointment) => {
         if (appointment.id === selectedAppointment.id) {
-          return { ...appointment, AppointmentStatus: { status: "cancel" } };
+          return { ...appointment, AppointmentStatus: { status: "Cancel" } };
         }
         return appointment;
       });

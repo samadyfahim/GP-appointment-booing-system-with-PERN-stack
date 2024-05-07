@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserProfileButton from "./UserProfileButton";
 import SidebarComponent from "./SidebarComponent";
+import { CgProfile } from "react-icons/cg";
 
 import { SlMenu } from "react-icons/sl";
 

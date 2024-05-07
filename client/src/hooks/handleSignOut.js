@@ -10,7 +10,3 @@ const handleSignOut = () => {
 };
 
 export default handleSignOut;
-
-//  const handleLogout = () => {
-//         handleSignOut();
-//     };

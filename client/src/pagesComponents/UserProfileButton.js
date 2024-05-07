@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axiosWithAuth from "../middelware/axiosWithAuth";
 import { Avatar, Dropdown } from "flowbite-react";
 import { HiCog, HiLogout, HiViewGrid } from "react-icons/hi";
+import { CgProfile } from "react-icons/cg";
 
 function UserProfileButton() {
   const [userProfile, setUserProfile] = useState({ name: "", email: "" });
@@ -10,7 +11,7 @@ function UserProfileButton() {
   useEffect(() => {
     const getUserNameAndEmail = async () => {
       try {
-        const axiosInstance = axiosWithAuth(); 
+        const axiosInstance = axiosWithAuth();
         const response = await axiosInstance.get("/api/user/nameAndEmail");
 
         const { name, email } = response.data;
@@ -39,13 +40,7 @@ function UserProfileButton() {
     <Dropdown
       arrowIcon={false}
       inline
-      label={
-        <Avatar
-          alt="User settings"
-          img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-          rounded
-        />
-      }
+      label={<Avatar alt="User settings" icon={CgProfile} rounded />}
     >
       <Dropdown.Header>
         <span className="block text-sm">{name || "No Name"}</span>
@@ -57,9 +52,7 @@ function UserProfileButton() {
       <Dropdown.Item icon={HiViewGrid}>Profile</Dropdown.Item>
       <Dropdown.Item icon={HiCog}>Settings</Dropdown.Item>
       <Dropdown.Divider />
-      <Dropdown.Item icon={HiLogout}>
-        Sign out
-      </Dropdown.Item>
+      <Dropdown.Item icon={HiLogout}>Sign out</Dropdown.Item>
     </Dropdown>
   );
 }

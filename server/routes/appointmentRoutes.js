@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { authenticateToken } = require("../middleware/authenticateToken");
 const AppointmentRequestController = require("../controllers/AppointmentRequestController");
-const appointmentsController = require("../controllers/AddressController");
+const appointmentsController = require("../controllers/AppointmentController");
 
 router.post(
   "/appointment/appointmentRequestForm",
@@ -16,7 +16,9 @@ router.get(
 );
 
 router.put(
-  "/appointment/appointments/:id/cancel",
+  "/appointment/appointments/:id",
+  authenticateToken,
   appointmentsController.cancelAppointment
 );
+
 module.exports = router;

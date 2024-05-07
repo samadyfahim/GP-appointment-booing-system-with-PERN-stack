@@ -196,6 +196,7 @@ exports.getAppointmentsWithDetailsByUserId = async (req, res) => {
 // Cancel an appointment by Id
 exports.cancelAppointment = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
   try {
     const appointment = await Appointment.findByPk(id);
     if (!appointment) {
